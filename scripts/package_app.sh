@@ -14,7 +14,12 @@ ICON_FILE="${ICON_BASENAME}.icns"
 
 BUNDLE_ID="${BUNDLE_ID:-com.duobao.mlink}"
 APP_VERSION="${APP_VERSION:-1.0.0}"
-BUILD_VERSION="${BUILD_VERSION:-1}"
+# Use a changing build number to avoid Finder/LaunchServices stale icon cache.
+# If caller explicitly sets BUILD_VERSION to a non-default value, keep it.
+BUILD_VERSION="${BUILD_VERSION:-}"
+if [[ -z "$BUILD_VERSION" || "$BUILD_VERSION" == "1" ]]; then
+  BUILD_VERSION="$(date "+%Y%m%d%H%M%S")"
+fi
 MIN_SYSTEM_VERSION="${MIN_SYSTEM_VERSION:-13.0}"
 BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S %z")"
 
@@ -55,7 +60,12 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST
   <key>CFBundleIdentifier</key>
   <string>${BUNDLE_ID}</string>
   <key>CFBundleIconFile</key>
-  <string>${ICON_BASENAME}</string>
+  <string>${ICON_FILE}</string>
+  <key>CFBundleIconFiles</key>
+  <array>
+    <string>${ICON_FILE}</string>
+    <string>${ICON_BASENAME}</string>
+  </array>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
