@@ -9,7 +9,7 @@ APP_DIR="$DIST_DIR/${APP_NAME}.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
-ICON_BASENAME="AppIcon"
+ICON_BASENAME="${APP_NAME}"
 ICON_FILE="${ICON_BASENAME}.icns"
 
 BUNDLE_ID="${BUNDLE_ID:-com.duobao.mlink}"
@@ -56,11 +56,6 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST
   <string>${BUNDLE_ID}</string>
   <key>CFBundleIconFile</key>
   <string>${ICON_BASENAME}</string>
-  <key>CFBundleIconFiles</key>
-  <array>
-    <string>${ICON_FILE}</string>
-    <string>${ICON_BASENAME}</string>
-  </array>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
