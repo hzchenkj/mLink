@@ -20,6 +20,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainWindowController?.newDocument()
     }
 
+    @objc private func newTab(_ sender: Any?) {
+        mainWindowController?.newTab()
+    }
+
     @objc private func openDocument(_ sender: Any?) {
         mainWindowController?.openDocument()
     }
@@ -30,6 +34,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func saveDocumentAs(_ sender: Any?) {
         _ = mainWindowController?.saveDocumentAs()
+    }
+
+    @objc private func closeCurrentTab(_ sender: Any?) {
+        mainWindowController?.closeCurrentTab()
+    }
+
+    @objc private func toggleFavorite(_ sender: Any?) {
+        mainWindowController?.toggleFavoriteForCurrentTab()
     }
 
     @objc private func showAboutPanel(_ sender: Any?) {
@@ -84,6 +96,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: "n"
         ).target = self
 
+        let newTabItem = fileMenu.addItem(
+            withTitle: "New Tab",
+            action: #selector(newTab(_:)),
+            keyEquivalent: "t"
+        )
+        newTabItem.target = self
+
         fileMenu.addItem(
             withTitle: "Open...",
             action: #selector(openDocument(_:)),
@@ -105,6 +124,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         saveAsItem.keyEquivalentModifierMask = [.command, .shift]
         saveAsItem.target = self
+
+        let closeTabItem = fileMenu.addItem(
+            withTitle: "Close Tab",
+            action: #selector(closeCurrentTab(_:)),
+            keyEquivalent: "w"
+        )
+        closeTabItem.target = self
+
+        fileMenu.addItem(NSMenuItem.separator())
+        let favoriteItem = fileMenu.addItem(
+            withTitle: "Toggle Favorite",
+            action: #selector(toggleFavorite(_:)),
+            keyEquivalent: "d"
+        )
+        favoriteItem.keyEquivalentModifierMask = [.command, .shift]
+        favoriteItem.target = self
 
         mainMenu.addItem(setupEditMenu())
 
