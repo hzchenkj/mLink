@@ -105,6 +105,8 @@ final class MainWindowController: NSWindowController {
         scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: leftWidth, height: containerBounds.height - 42))
         scrollView.autoresizingMask = [.width, .height]
         scrollView.hasVerticalScroller = true
+        scrollView.hasVerticalRuler = true
+        scrollView.rulersVisible = true
         scrollView.borderType = .noBorder
         scrollView.drawsBackground = true
         scrollView.backgroundColor = Theme.editorBackgroundColor
@@ -146,6 +148,11 @@ final class MainWindowController: NSWindowController {
         textView.usesRuler = false
 
         scrollView.documentView = textView
+
+        // Add line number ruler
+        let lineNumberRuler = LineNumberRulerView(textView: textView)
+        scrollView.verticalRulerView = lineNumberRuler
+
         editorView.addSubview(scrollView)
 
         // Right preview
