@@ -55,9 +55,12 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST
   <key>CFBundleIdentifier</key>
   <string>${BUNDLE_ID}</string>
   <key>CFBundleIconFile</key>
-  <string>${ICON_FILE}</string>
-  <key>CFBundleIconName</key>
   <string>${ICON_BASENAME}</string>
+  <key>CFBundleIconFiles</key>
+  <array>
+    <string>${ICON_FILE}</string>
+    <string>${ICON_BASENAME}</string>
+  </array>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
