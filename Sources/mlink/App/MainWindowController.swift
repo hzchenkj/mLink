@@ -38,6 +38,7 @@ final class MainWindowController: NSWindowController {
     private var splitView: NSSplitView!
     private var scrollView: NSScrollView!
     private var textView: NSTextView!
+    private var lineNumberView: LineNumberView!
     private var previewWebView: WKWebView!
 
     private var tabs: [EditorTab] = []
@@ -97,16 +98,21 @@ final class MainWindowController: NSWindowController {
         splitView.delegate = self
         rootView.addSubview(splitView)
 
-        // Left editor
+        // Left editor with line numbers
         let leftWidth = containerBounds.width * CGFloat(splitLayoutStore.ratio)
         let editorView = NSView(frame: NSRect(x: 0, y: 0, width: leftWidth, height: containerBounds.height - 42))
         editorView.autoresizingMask = [.width, .height]
 
-        scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: leftWidth, height: containerBounds.height - 42))
+        // Line number view
+        let lineNumberWidth: CGFloat = 50
+        let lineNumberView = LineNumberView(frame: NSRect(x: 0, y: 0, width: lineNumberWidth, height: containerBounds.height - 42))
+        lineNumberView.autoresizingMask = [.height]
+        editorView.addSubview(lineNumberView)
+
+        // Scroll view for text
+        scrollView = NSScrollView(frame: NSRect(x: lineNumberWidth, y: 0, width: leftWidth - lineNumberWidth, height: containerBounds.height - 42))
         scrollView.autoresizingMask = [.width, .height]
         scrollView.hasVerticalScroller = true
-        scrollView.hasVerticalRuler = true
-        scrollView.rulersVisible = true
         scrollView.borderType = .noBorder
         scrollView.drawsBackground = true
         scrollView.backgroundColor = Theme.editorBackgroundColor
@@ -148,12 +154,12 @@ final class MainWindowController: NSWindowController {
         textView.usesRuler = false
 
         scrollView.documentView = textView
-
-        // Add line number ruler
-        let lineNumberRuler = LineNumberRulerView(textView: textView)
-        scrollView.verticalRulerView = lineNumberRuler
-
         editorView.addSubview(scrollView)
+
+        // Connect line number view
+        self.lineNumberView = lineNumberView
+        lineNumberView.textView = textView
+        lineNumberView.scrollView = scrollView
 
         // Right preview
         let rightWidth = containerBounds.width - leftWidth - splitView.dividerThickness
@@ -425,6 +431,7 @@ final class MainWindowController: NSWindowController {
 
     @objc private func editorDidScroll(_ notification: Notification) {
         syncPreviewScroll()
+        lineNumberView?.needsDisplay = true
     }
 
     private func syncPreviewScroll() {
@@ -625,6 +632,7 @@ extension MainWindowController: NSTextViewDelegate {
                 guard let self else { return }
                 self.applyHighlight()
                 self.updatePreview(text: self.textView.string)
+                self.lineNumberView?.needsDisplay = true
             }
             debounceWorkItem = work
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: work)

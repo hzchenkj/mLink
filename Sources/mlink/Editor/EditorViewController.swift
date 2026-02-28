@@ -28,6 +28,11 @@ final class EditorViewController: NSViewController, NSTextViewDelegate {
         setupEditor()
     }
 
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        scrollView.frame = view.bounds
+    }
+
     func setText(_ newValue: String) {
         textView.string = newValue
         highlighter.highlight(textStorage: textView.textStorage, editedRange: nil)
@@ -45,7 +50,6 @@ final class EditorViewController: NSViewController, NSTextViewDelegate {
     }
 
     private func setupEditor() {
-        // 最简单的 NSTextView 创建方式
         textView = NSTextView()
         textView.delegate = self
         textView.font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
